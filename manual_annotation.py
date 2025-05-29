@@ -20,7 +20,7 @@ total_frames = 0
 json_filename = None
 json_filename_show = None
 
-task_path = "/home/chenpengan/hny/data_process/"
+task_path = "/home/chenpengan/hny/hdf5s_song/"
 task_list = glob.glob(os.path.join(task_path, "*"))
 task_index = 0
 task_info_labels = [] 
@@ -69,6 +69,8 @@ def add_label(event):
 
     global frame_index, current_subtask, labels, json_filename_show, current_subtask_text
     subtasks = load_subtasks(json_filename_show)
+    if current_subtask >= len(subtasks):
+        return 
     subtask_label = subtasks[current_subtask]
     
     # 标记当前帧
@@ -117,7 +119,11 @@ def compute_score(label):
         numbers = list(map(int, re.findall(r'\d+', s)))
         numbers = numbers[1:]
 
-        score += interval_iou(numbers[0]*5, numbers[1]*5, index_begin, gt_s)
+        if len(numbers) < 2:
+            score += interval_iou((numbers[0])*5, (numbers[0]+1)*5, index_begin, gt_s)
+        else:
+            score += interval_iou((numbers[0])*5, (numbers[-1]+1)*5, index_begin, gt_s)
+        
         index_begin = gt_s + 1
 
     return score/ len(label) if label else 0
@@ -147,15 +153,16 @@ def save_labels():
     with open(score_path, "a") as f:
         f.write(f"Index {file_index}: {score}\n")
 
-    file_index = file_index + 1
+    current_subtask = 0
+    file_index = file_index + 5
 
-    if file_index >= len(hdf5_files):
+    if file_index >= (len(hdf5_files)):
 
         file_index = 0
         if task_index < len(task_list):
             task_index += 1
 
-        hdf5_dir = os.path.dirname(task_list[task_index])
+        hdf5_dir = task_list[task_index]
         # 使用 glob 模块获取该目录下所有 .hdf5 文件的路径
         hdf5_files = glob.glob(os.path.join(hdf5_dir, "*.hdf5"))
         hdf5_files = sorted(hdf5_files)
