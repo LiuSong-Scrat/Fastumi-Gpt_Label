@@ -1,0 +1,108 @@
+{
+    "task_summary": "move, pick up leaves and bread, place on plate, return.",
+    "substeps": [
+        {
+            "step_id": 1,
+            "action": "move",
+            "description": "move towards leaves",
+            "frames": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "step_id": 2,
+            "action": "pick up",
+            "description": "grab leaves from plate",
+            "frames": [
+                4,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "step_id": 3,
+            "action": "move",
+            "description": "move towards sandwich plate",
+            "frames": [
+                8,
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "step_id": 4,
+            "action": "place",
+            "description": "position leaves on sandwich",
+            "frames": [
+                12,
+                13,
+                14,
+                15
+            ]
+        },
+        {
+            "step_id": 5,
+            "action": "move",
+            "description": "move towards bread in toaster",
+            "frames": [
+                16,
+                17,
+                18,
+                19
+            ]
+        },
+        {
+            "step_id": 6,
+            "action": "pick up",
+            "description": "grab bread from toaster",
+            "frames": [
+                20,
+                21,
+                22,
+                23
+            ]
+        },
+        {
+            "step_id": 7,
+            "action": "move",
+            "description": "move back to sandwich plate",
+            "frames": [
+                24,
+                25,
+                26,
+                27
+            ]
+        },
+        {
+            "step_id": 8,
+            "action": "place",
+            "description": "place bread on sandwich",
+            "frames": [
+                28,
+                29,
+                30,
+                31
+            ]
+        },
+        {
+            "step_id": 9,
+            "action": "return",
+            "description": "return to initial position",
+            "frames": [
+                32,
+                33,
+                34,
+                35,
+                36,
+                37,
+                38,
+                39
+            ]
+        }
+    ]
+}

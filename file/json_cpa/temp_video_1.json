@@ -1,0 +1,124 @@
+{
+    "task_summary": "move, pick up fork and spoon, place in holder, return.",
+    "substeps": [
+        {
+            "step_id": 1,
+            "action": "move",
+            "description": "move towards fork and spoon on table",
+            "frames": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "step_id": 2,
+            "action": "pick up",
+            "description": "grab fork from table",
+            "frames": [
+                6,
+                7,
+                8
+            ]
+        },
+        {
+            "step_id": 3,
+            "action": "move",
+            "description": "move towards utensil holder",
+            "frames": [
+                9,
+                10,
+                11,
+                12,
+                13
+            ]
+        },
+        {
+            "step_id": 4,
+            "action": "place",
+            "description": "place fork into utensil holder",
+            "frames": [
+                14,
+                15,
+                16
+            ]
+        },
+        {
+            "step_id": 5,
+            "action": "move",
+            "description": "move back to spoon on table",
+            "frames": [
+                17,
+                18,
+                19,
+                20,
+                21
+            ]
+        },
+        {
+            "step_id": 6,
+            "action": "pick up",
+            "description": "grab spoon from table",
+            "frames": [
+                22,
+                23,
+                24
+            ]
+        },
+        {
+            "step_id": 7,
+            "action": "move",
+            "description": "move towards utensil holder",
+            "frames": [
+                25,
+                26,
+                27,
+                28,
+                29
+            ]
+        },
+        {
+            "step_id": 8,
+            "action": "place",
+            "description": "place spoon into utensil holder",
+            "frames": [
+                30,
+                31,
+                32
+            ]
+        },
+        {
+            "step_id": 9,
+            "action": "return",
+            "description": "return to initial pose",
+            "frames": [
+                33,
+                34,
+                35,
+                36,
+                37,
+                38,
+                39,
+                40,
+                41,
+                42,
+                43,
+                44,
+                45,
+                46,
+                47,
+                48,
+                49,
+                50,
+                51,
+                52,
+                53,
+                54,
+                55
+            ]
+        }
+    ]
+}

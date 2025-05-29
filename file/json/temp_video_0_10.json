@@ -1,0 +1,38 @@
+[
+    {
+        "step": 1,
+        "content": "move towards the leaves---frames:1, 2, 3"
+    },
+    {
+        "step": 2,
+        "content": "grab the leaves---frames:4, 5, 6"
+    },
+    {
+        "step": 3,
+        "content": "move towards the sandwich base (bread with filling)---frames:7, 8, 9"
+    },
+    {
+        "step": 4,
+        "content": "place the leaves onto the sandwich base---frames:10, 11, 12"
+    },
+    {
+        "step": 5,
+        "content": "move towards the bread in the toaster---frames:13, 14, 15"
+    },
+    {
+        "step": 6,
+        "content": "grab the bread from the toaster---frames:16, 17, 18"
+    },
+    {
+        "step": 7,
+        "content": "move towards the sandwich with leaves---frames:19, 20, 21"
+    },
+    {
+        "step": 8,
+        "content": "place the bread on top of the sandwich---frames:22, 23, 24"
+    },
+    {
+        "step": 9,
+        "content": "return to the initial position---frames:25, 26"
+    }
+]

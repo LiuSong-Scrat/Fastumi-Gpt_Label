@@ -1,0 +1,22 @@
+[
+    {
+        "step": 1,
+        "content": "move towards the bottle---frames:1, 2, 3"
+    },
+    {
+        "step": 2,
+        "content": "grab the bottle---frames:4, 5"
+    },
+    {
+        "step": 3,
+        "content": "move towards the cup---frames:6, 7"
+    },
+    {
+        "step": 4,
+        "content": "pour the water into the cup---frames:8, 9, 10, 11, 12"
+    },
+    {
+        "step": 5,
+        "content": "return to initial position---frames:13, 14, 15, 16"
+    }
+]

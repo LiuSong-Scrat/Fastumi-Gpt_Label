@@ -1,0 +1,38 @@
+[
+    {
+        "step": 1,
+        "content": "Move towards the leaves---frames: 1-11"
+    },
+    {
+        "step": 2,
+        "content": "Grab the leaves---frames: 12-13"
+    },
+    {
+        "step": 3,
+        "content": "Move towards the first slice of bread---frames: 14-18"
+    },
+    {
+        "step": 4,
+        "content": "Place the leaves onto the bread---frames: 19-21"
+    },
+    {
+        "step": 5,
+        "content": "Move towards the second slice of bread---frames: 22-27"
+    },
+    {
+        "step": 6,
+        "content": "Grab the second slice of bread---frames: 28-29"
+    },
+    {
+        "step": 7,
+        "content": "Move towards the first slice of bread with leaves---frames: 30-34"
+    },
+    {
+        "step": 8,
+        "content": "Place the second slice of bread on top of the leaves---frames: 35-37"
+    },
+    {
+        "step": 9,
+        "content": "Return to initial position---frames: 38-40"
+    }
+]

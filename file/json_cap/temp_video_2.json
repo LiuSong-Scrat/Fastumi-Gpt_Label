@@ -1,0 +1,71 @@
+{
+    "task_summary": "open the shoebox, pick up shoes, place them inside, return.",
+    "substeps": [
+        {
+            "step_id": 1,
+            "action": "open",
+            "description": "open the shoebox lid",
+            "frames": [
+                9,
+                10,
+                11,
+                12,
+                13
+            ]
+        },
+        {
+            "step_id": 2,
+            "action": "pick up",
+            "description": "grab the first shoe",
+            "frames": [
+                17,
+                18,
+                19,
+                20
+            ]
+        },
+        {
+            "step_id": 3,
+            "action": "place",
+            "description": "place the first shoe inside",
+            "frames": [
+                21,
+                22,
+                23,
+                24
+            ]
+        },
+        {
+            "step_id": 4,
+            "action": "pick up",
+            "description": "grab the second shoe",
+            "frames": [
+                30,
+                31,
+                32,
+                33
+            ]
+        },
+        {
+            "step_id": 5,
+            "action": "place",
+            "description": "place the second shoe inside",
+            "frames": [
+                34,
+                35,
+                36,
+                37
+            ]
+        },
+        {
+            "step_id": 6,
+            "action": "return",
+            "description": "return to initial position",
+            "frames": [
+                72,
+                73,
+                74
+            ]
+        }
+    ]
+}

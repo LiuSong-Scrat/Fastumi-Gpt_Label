@@ -1,0 +1,38 @@
+[
+    {
+        "step": 1,
+        "content": "Move towards the spoon and fork on the plate---frames: 1, 2, 3"
+    },
+    {
+        "step": 2,
+        "content": "Pick up the fork---frames: 4, 5, 6"
+    },
+    {
+        "step": 3,
+        "content": "Move towards the utensil holder---frames: 7, 8, 9"
+    },
+    {
+        "step": 4,
+        "content": "Place the fork into the utensil holder---frames: 10, 11, 12"
+    },
+    {
+        "step": 5,
+        "content": "Return to the plate---frames: 13, 14, 15"
+    },
+    {
+        "step": 6,
+        "content": "Pick up the spoon---frames: 16, 17, 18"
+    },
+    {
+        "step": 7,
+        "content": "Move towards the utensil holder---frames: 19, 20, 21"
+    },
+    {
+        "step": 8,
+        "content": "Place the spoon into the utensil holder---frames: 22, 23, 24"
+    },
+    {
+        "step": 9,
+        "content": "Return to the initial position---frames: 25, 26, 27"
+    }
+]

@@ -1,0 +1,50 @@
+[
+    {
+        "step": 1,
+        "content": "move towards the shoebox---frames:1, 2, 3, 4, 5"
+    },
+    {
+        "step": 2,
+        "content": "open the shoebox---frames:6, 7, 8"
+    },
+    {
+        "step": 3,
+        "content": "move towards the first shoe---frames:9, 10, 11"
+    },
+    {
+        "step": 4,
+        "content": "pick up the first shoe---frames:12, 13, 14"
+    },
+    {
+        "step": 5,
+        "content": "move towards the shoebox---frames:15, 16, 17"
+    },
+    {
+        "step": 6,
+        "content": "place the first shoe inside the shoebox---frames:18, 19, 20"
+    },
+    {
+        "step": 7,
+        "content": "move towards the second shoe---frames:21, 22, 23"
+    },
+    {
+        "step": 8,
+        "content": "pick up the second shoe---frames:24, 25, 26"
+    },
+    {
+        "step": 9,
+        "content": "move towards the shoebox---frames:27, 28, 29"
+    },
+    {
+        "step": 10,
+        "content": "place the second shoe inside the shoebox---frames:30, 31, 32"
+    },
+    {
+        "step": 11,
+        "content": "close the shoebox---frames:33, 34, 35"
+    },
+    {
+        "step": 12,
+        "content": "return to initial position---frames:36, 37, 38, 39"
+    }
+]

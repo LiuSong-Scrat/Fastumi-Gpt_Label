@@ -1,0 +1,34 @@
+[
+    {
+        "step": 1,
+        "content": "(left_arm) move towards the microwave---(right_arm) none---frames:0-10"
+    },
+    {
+        "step": 2,
+        "content": "(left_arm) open the microwave---(right_arm) none---frames:11-22"
+    },
+    {
+        "step": 3,
+        "content": "(left_arm) none---(right_arm) move towards the bread---frames:23-28"
+    },
+    {
+        "step": 4,
+        "content": "(left_arm) none---(right_arm) pick up the bread---frames:29-38"
+    },
+    {
+        "step": 5,
+        "content": "(left_arm) none---(right_arm) move to the microwave---frames:39-50"
+    },
+    {
+        "step": 6,
+        "content": "(left_arm) none---(right_arm) place the bread inside the microwave---frames:51-62"
+    },
+    {
+        "step": 7,
+        "content": "(left_arm) close the microwave---(right_arm) none---frames:63-73"
+    },
+    {
+        "step": 8,
+        "content": "(left_arm) return to the initial position---(right_arm) return to the initial position---frames:74-90"
+    }
+]
