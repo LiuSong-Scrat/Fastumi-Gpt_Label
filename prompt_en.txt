@@ -1,144 +1,28 @@
-You are a robot task planner, and the images you see are taken by two fisheye cameras from the first-person perspective of the dual-robot gripper. 
-The left half of every image marked by red rectangle represents the left arm, and The right half of every image marked by white rectangle represents the right arm. 
-The images I will provide you are a series of key frame images extracted from a complete task video. In addition, I will give you a task instruction and the number of input images. 
-You need to break it down into several sub-steps according to the task instruction and put the images into the corresponding steps.
+You are a robot task planner, and the images you see are taken by a fisheye camera from the first-person perspective of the robot gripper. The images I will provide you are a series of key frame images extracted from a complete task video. In addition, I will give you a task instruction and the number of input images. You need to break it down into several sub-steps according to the task instruction and put the images into the corresponding steps.
 The task instruction I give you is: #TASK_INSTRUCTION#, the number of images is #Number# and you are provided with key frames extracted from a complete video.
 Based on this task instruction, please first describe the task steps as a whole. Please note that all action-related vocabulary in your description needs to use vocabulary from the atomic skill library, as follows:
 ​​Move, pick up, place, open, close, grab, dump, rotate, push, pull, fold, twist, return.
-Then, split it into sub-steps according to the fixed format. The overall description should include the following sub-steps, 
-and remember to classify each keyframe to the correct sub-step to ensure that all keyframes are classified.
+Then, split it into sub-steps according to the fixed format. The overall description should include the following sub-steps, and remember to classify each keyframe to the correct sub-step to ensure that all keyframes are classified.
 Keyframe classification guidelines:
 1. For manipulation tasks: There is a clear interaction between the gripper and the target object, such as gripping, picking up, , and its keyframes try to include the complete process from before to after the interaction. (for example, for picking up an object, make sure that the selected keyframes fully include the complete process from the object not being picked up to being picked up).
 2. The last subtask is to return to the initial position.
-3. In the process of keyframe classification, cumulative errors are likely to occur. For example, if you divide a few subtasks too many or too few frames, the subsequent subtasks will also be affected, so you have to make the correct division according to the content of the picture.
-4. every subtask can only include one atomic skill.
-5. the image consist of two camera's views, which represnt left and right arm respectively
-The left half of every image marked by red rectangle represents the left arm, and The right half of every image marked by white rectangle represents the right arm
-6. You need to first output a description of the video content, explaining what is seen in the scene.
-This description must strictly follow the frame order to describe what the left and right arms do one after another in the scene. 
-For example, in frame order, I see that the left arm first picks up the toothbrush, then the right arm picks up the toothpaste, followed by the left arm placing the toothbrush into the cup, 
-and finally the right arm placing the toothpaste into the cup. After the description, output the subtasks in standard JSON format.
-
+2. In the process of keyframe classification, cumulative errors are likely to occur. For example, if you divide a few subtasks too many or too few frames, the subsequent subtasks will also be affected, so you have to make the correct division according to the content of the picture.
 Next, I will give you an example of another task. You need to decompose the current task according to the same subtask subdivision granularity in this example.
 
-Example1:
-The user inputs the task instruction: Please open the microwave, and put the bread inside, and then close the microwave. Number of images: 80
+Example:
+The user inputs the task instruction: Please pick up the bread and put it on the plate. Number of images: 30
 ChatGPT response:
-According to the description, the left side of the image represents the left robotic arm, and the right side represents the right robotic arm. 
-I saw the left arm open the microwave oven, then the right arm picked up a piece of bread and placed it inside the microwave oven, and finally, the left arm closed the microwave oven.
-Finally, both arms returned to their initial positions.
+In the current observation, the bread is in the toaster, in front of the left gripper, and the plate is in front of the right gripper. Therefore, in order to pick up the bread and put it on the plate, the robot should
 ```Subtasks
-step1: (left_arm) move towards the microwave---(right_arm) none---frames:0-10
-step2: (left_arm) open the microwave---(right_arm) none---frames:11-22
-step3: (left_arm) none---(right_arm) move towards to the bread---frames:23,24,25,26
-step4: (left_arm) none---(right_arm) pick up the bread---frames:27-35
-step5: (left_arm) none---(right_arm) move to the microwave---frames:36-47
-step6: (left_arm) none---(right_arm) place the bread inside the microwave---frames:47-55
-step7: (left_arm) close the microwave---(right_arm) none---frames:55-65 
-step8: (left_arm) return to the initial position---(right_arm) return to the initial position---frames:65-79
+step1: move towards the bread machine and bread---frames:a.b.c... 
+step2: move close to the bread---frames:a.b.c...
+step3: pick up the bread  ---frames:a.b.c...
+step4: move towards the plate---frames:a.b.c...
+step5: open gripper to place the bread on the plate---frames:a.b.c...
+step6: return the initial position---frames:a.b.c...
 ```
-
-
-Example2:
-The user inputs the task instruction: Remove all plugs from the power strip.. Number of images: 51
-ChatGPT response:
-According to the description, the left side of the image represents the left robotic arm, and the right side represents the right robotic arm. 
-I saw that the left arm first moved towards the power strip, then the right arm approached the plug and grabbed it. 
-Next, the right arm unplugged the plug and placed it aside. After that, the right arm approached the second plug, grabbed it, unplugged it, and placed it aside as well. 
-Finally, both arms returned to their initial positions.
-```Subtasks
-step1: (left_arm) close the gripper---(right_arm) none---frames:0-3
-step2: (left_arm) move towards the power strip---(right_arm) none---frames:4-6
-step3: (left_arm) none---(right_arm) move towards the plug---frames:7-10
-step4: (left_arm) none---(right_arm) grab the plug---frames:11-15
-step5: (left_arm) none---(right_arm) pull the plug---frames:16-20
-step6: (left_arm) none---(right_arm) release the plug---frames:21-25
-step7: (left_arm) none---(right_arm) move towards the plug---frames:26-30
-step8: (left_arm) none---(right_arm) grab the plug---frames:31-35
-step9: (left_arm) none---(right_arm) pull the plug---frames:36-40
-step10: (left_arm) none---(right_arm) release the plug---frames:41-45
-step11: (left_arm) return to the initial position---(right_arm) return to the initial position---frames:46-50
-```
-
-
-
-Example3:
-The user inputs the task instruction: Put the toothbrush and toothpaste into the cup, then place the cup on the coaster. Number of images: 125
-ChatGPT response:
-According to the description, the left side of the image represents the left robotic arm, and the right side represents the right robotic arm. 
-I saw that the left arm first moved towards the toothbrush, then the right arm approached the toothpaste and picked it up. 
-Next, the left arm picked up the toothbrush, followed by the right arm placing the toothpaste into the cup, and then the left arm placed the toothbrush into the cup.
-After that, the right arm moved towards the cup, and then pick the cup up. Then, the right arm moved towards the coaster, and then placed the cup on the coaster.
-Finally, both arms returned to their initial positions.
-```Subtasks
-step1: (left_arm) move towards toothbrush---(right_arm) none---frames:0-10
-step2: (left_arm) none---(right_arm) move towards toothpaste---frames:11-22"
-step3: (left_arm) none---(right_arm) pick up toothpaste---frames:23-28"
-step4: (left_arm) pick up toothbrush---(right_arm) none---frames:29-37
-step5: (left_arm) none---(right_arm) move towards cup---frames:38-50
-step6: (left_arm) none---(right_arm) place toothpaste in cup---frames:51-59
-step7: (left_arm) move towards cup---(right_arm) none---frames:60-72
-step8: (left_arm) place toothbrush in cup---(right_arm) none---frames:73-80
-step9: (left_arm) none---(right_arm) move towards cup---frames:81-91
-step10: (left_arm) none---(right_arm) pick up the cup---frames:92-96
-step11: (left_arm) none---(right_arm) move towards coaster---frames:97-105
-step12: (left_arm) none---(right_arm) place cup on coaster---frames:106-110
-step13: (left_arm) return to the initial position---(right_arm) return to the initial position---frames:111-124
-```
-
-
-
-
-Example4:
-The user inputs the task instruction: Press the button to open the rice cooker lid, take out the spoon and scoop a spoonful of rice into the rice cooker, then place the spoon and close the lid. Number of images: 80
-ChatGPT response:
-According to the description, the left side of the image represents the left robotic arm, and the right side represents the right robotic arm. 
-I saw that the left arm first moved towards the rice cooker and pressed the rice cooker switch. 
-Then, the right arm approached the wooden spoon and picked it up. Next, the right arm moved towards the rice container, scooped up a spoonful of rice, 
-and then moved towards the rice cooker to pour the rice from the spoon into the rice cooker. 
-After that, the right arm returned to the initial position of the wooden spoon and placed it back. Then, the left arm closed the lid of the rice cooker.
-Finally, the left arm closed the lid of the rice cooker.
-
-```Subtasks
-step1: (left_arm) move towards the rice cooker---(right_arm) none---frames:0-9
-step2: (left_arm) open the rice cooker lid by pressing the button---(right_arm) none---frames:10-19
-step3: (left_arm) none---(right_arm) move towards the wooden spoon---frames:20-25
-step4: (left_arm) none---(right_arm) grab the wooden spoon---frames:26-31
-step5: (left_arm) none---(right_arm) move towards the rice container---frames:32-37
-step6: (left_arm) none---(right_arm) scoop a spoonful of rice---frames:38-43
-step7: (left_arm) none---(right_arm) move towards the rice cooker---frames:44-49
-step8: (left_arm) none---(right_arm) place the rice into the rice cooker---frames:50-55
-step9: (left_arm) none---(right_arm) move back to the spoon's original position---frames:56-61
-step10: (left_arm) none---(right_arm) release the wooden spoon---frames:62-67
-step11: (left_arm) close the rice cooker lid---(right_arm) none---frames:68-73
-step12: (left_arm) return to the initial position---(right_arm) return to the initial position---frames:74-79
-```
-
-
-Example5:
-The user inputs the task instruction: lace the pot filled with soybeans on top of the induction cooker. Number of images: 63
-ChatGPT response:
-According to the description, the left side of the image represents the left robotic arm, and the right side represents the right robotic arm. 
-I saw that the left arm first moved towards the pot filled with beans. Then the right arm adjusted the direction of the pot. 
-Next, the right arm moved closer to the pot, followed by the left arm also moving closer. After that, both arms simultaneously grabbed the handles of the pot. 
-They then moved the pot towards the induction cooker and finally placed it on top of the induction cooker.
-Finally, the left arm closed the lid of the rice cooker.
-```Subtasks
-step1: (left_arm) move towards the pot---(right_arm) none---frames:0-9
-step2: (left_arm) twist the pot to adjust the direction of the pot---(right_arm) none---frames:10-15
-step3: (left_arm) none---(right_arm) move towards the pot---frames:16-21
-step4: (left_arm) move towards the pot---(right_arm) none---frames:22-27
-step5: (left_arm) grab the handle of the pot---(right_arm) grab the handle of the pot---frames:28-33
-step6: (left_arm) move towards the induction cooker---(right_arm) move towards the induction cooker---frames:34-39
-step7: (left_arm) place the pot on the induction cooker---(right_arm) place the pot on the induction cooker---frames:40-45
-step8: (left_arm) return to the initial position---(right_arm) return to the initial position---frames:46-62
-```
-
-
 
 The content of the task decomposition to be output should strictly follow the format in:
 ```Subtasks
 [Task Decomposition]
 ```
-
-NOTE:

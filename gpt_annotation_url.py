@@ -7,7 +7,7 @@ import cv2
 import os
 import re
 import time
-
+import threading
 
 client = OpenAI(
     base_url="http://35.220.164.252:3888/v1/",
@@ -17,8 +17,9 @@ client = OpenAI(
 prompt_dir = '/home/yan/Liusong/DataProcessing/prompt_en.txt'
 task_list = [
     {
-        "task_name": "/home/yan/Liusong/DataProcessing/file/video",
-        "task_instruction": "Please open the shoebox, first place one shoe inside, then place the other shoe inside as well." 
+        "task_name": "/home/yan/Liusong/Workspace/videos",
+        "task_instruction": "Please subtask what you see." 
+        # "task_instruction": "Please open the shoebox, first place one shoe inside, then place the other shoe inside as well." 
         # "task_instruction": "Please grab the leaves and bread to make sandwiches"  
         # "task_instruction": "Please pick up the bottle, pour the water into the cup, put the bottle down on the table"
         # "task_instruction": "Please place the fork and spoon into the utensil holder"
@@ -29,7 +30,7 @@ task_list = [
 
 
 
-def get_gpt_label(params):
+def get_gpt_label(params,task,video_file):
     result = client.chat.completions.create(**params)
     outputs = result.choices[0].message.content
     # print(outputs)
@@ -76,12 +77,6 @@ def get_gpt_label(params):
     print(f"JSON file saved as {json_filename}")
     print("=========================================")
  
-# 创建两个线程
-try:
-   thread.start_new_thread( get_gpt_label, ("Thread-1", 2, ) )
-   thread.start_new_thread( print_time, ("Thread-2", 4, ) )
-
-
 
 
 
@@ -89,68 +84,64 @@ try:
 
 
 for task in task_list:
-
+    threads = []
     # 使用 glob 模块获取该目录下所有 .mp4 文件的路径
     video_files = glob.glob(os.path.join(task["task_name"], "*.mp4"))
     video_files = sorted(video_files)
+    for sno,video_file in enumerate(video_files):
+        video = cv2.VideoCapture(video_file)
+        print('load video:', video_file)
+        base64Frames = []
+        ## 将60帧的视频转为20帧
+        interval = 3
+        count = 0
+        while video.isOpened():
+            success, frame = video.read()
+            
+            if not success:
+                break
 
-    video_file = video_files[15] #######################################################-------------------
-    video = cv2.VideoCapture(video_file)
-    print('load video:', video_file)
-    base64Frames = []
-
-    ## 将60帧的视频转为20帧
-    interval = 3
-    count = 0
-    while video.isOpened():
-        success, frame = video.read()
+            if count % interval == 0:
+                _, buffer = cv2.imencode(".jpg", frame)
+                base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
+            count += 1
+        video.release()
         
-        if not success:
-            break
+        ## 
+        interval_sample = 5
+        image_number = str(len(base64Frames[0::interval_sample]))
+        task_instruction = task["task_instruction"]
+        with open(prompt_dir, 'r', encoding='utf-8') as file:
+            content_prompt = file.read()
+        content_prompt = content_prompt.replace('#TASK_INSTRUCTION#', task_instruction)    
+        content = content_prompt.replace('#Number#', image_number)  
+        print("interval_sample: ", interval_sample)
+        print("frames read: ", len(base64Frames))
+        print('input num:', image_number)
+        PROMPT_MESSAGES = [
+            {
+                "role": "user",
+                "content": [
+                    f"{content}",
+                    # *map(lambda x: {"image": x, "resize": 786}, base64Frames[0::18]),
+                    *map(lambda x: {"type": "image_url", 
+                                "image_url": {"url": f'data:image/jpg;base64,{x}', "detail": "auto"}}, base64Frames[0::interval_sample]),
+                ],
 
-        if count % interval == 0:
-            _, buffer = cv2.imencode(".jpg", frame)
-            base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
-        count += 1
+            },
+        ]
+        params = {
+            "model": "gpt-4o",
+            "messages": PROMPT_MESSAGES,
+            # "response_format" : {"type": "json_object"},
+            "max_tokens": 500,
+            "temperature": 0.8,
+        }
 
-    video.release()
-    
-    ## 
-    interval_sample = 5
-    image_number = str(len(base64Frames[0::interval_sample]))
-    
-    task_instruction = task["task_instruction"]
+        t = threading.Thread(target=get_gpt_label,args=(params, task, video_file))
+        threads.append(t)
+        t.start()
 
-    with open(prompt_dir, 'r', encoding='utf-8') as file:
-        content_prompt = file.read()
-
-    content_prompt = content_prompt.replace('#TASK_INSTRUCTION#', task_instruction)    
-    content = content_prompt.replace('#Number#', image_number)  
-    
-    print("interval_sample: ", interval_sample)
-    print("frames read: ", len(base64Frames))
-    print('input num:', image_number)
-    
-    PROMPT_MESSAGES = [
-        {
-            "role": "user",
-            "content": [
-                f"{content}",
-                # *map(lambda x: {"image": x, "resize": 786}, base64Frames[0::18]),
-                *map(lambda x: {"type": "image_url", 
-                            "image_url": {"url": f'data:image/jpg;base64,{x}', "detail": "auto"}}, base64Frames[0::interval_sample]),
-            ],
-
-        },
-    ]
-    params = {
-        "model": "gpt-4o",
-        "messages": PROMPT_MESSAGES,
-        # "response_format" : {"type": "json_object"},
-        "max_tokens": 500,
-        "temperature": 0.8,
-    }
-
-
-
-
+    for t in threads:
+        t.join()
+            
