@@ -19,9 +19,12 @@ current_subtask = []
 total_frames = 0  
 json_filename = None
 json_filename_show = None
-
+index_begin = 1
+index_begin_gpt = 1
 task_path = "/home/chenpengan/hny/hdf5s_song/"
 task_list = glob.glob(os.path.join(task_path, "*"))
+task_list = sorted(task_list)
+task_list = task_list[1:]
 task_index = 0
 task_info_labels = [] 
 
@@ -108,7 +111,7 @@ def compute_score(label):
     """
     # 这里可以根据具体的标签内容计算分数
     # 例如，假设每个标签的分数为1
-    index_begin = 1
+    global index_begin, index_begin_gpt
     score = 0
     for i in range(len(label)):
         gt_s = label[i]['frame']
@@ -120,18 +123,19 @@ def compute_score(label):
         numbers = numbers[1:]
 
         if len(numbers) < 2:
-            score += interval_iou((numbers[0])*5, (numbers[0]+1)*5, index_begin, gt_s)
+            score += interval_iou(index_begin_gpt, (numbers[0])*5, index_begin, gt_s)
         else:
-            score += interval_iou((numbers[0])*5, (numbers[-1]+1)*5, index_begin, gt_s)
+            score += interval_iou(index_begin_gpt, (numbers[-1])*5, index_begin, gt_s)
         
         index_begin = gt_s + 1
+        index_begin_gpt = (numbers[-1])*5 + 1
 
-    return score/ len(label) if label else 0
+    return score/ len(label) * 100 if label else 0
 
 # 保存标签数据
 def save_labels():
     
-    global frame_index, current_subtask, labels, json_filename_show, current_subtask_text, task_index, hdf5_dir
+    global frame_index, current_subtask, labels, json_filename_show, current_subtask_text, task_index, hdf5_dir, index_begin, index_begin_gpt
     subtasks = load_subtasks(json_filename_show)
 
     if current_subtask >= len(subtasks):  # 如果所有subtask都标注完了
@@ -151,14 +155,16 @@ def save_labels():
 
     score_path = os.path.join(hdf5_dir, "tasks_scores.txt")
     with open(score_path, "a") as f:
-        f.write(f"Index {file_index}: {score}\n")
+        f.write(f"{json_filename_show}: {score}\n")
 
     current_subtask = 0
-    file_index = file_index + 5
+    file_index = file_index + 1
 
     if file_index >= (len(hdf5_files)):
 
         file_index = 0
+        index_begin = 1
+        index_begin_gpt = 1
         if task_index < len(task_list):
             task_index += 1
 
