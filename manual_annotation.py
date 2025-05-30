@@ -9,7 +9,7 @@ import glob
 import re
 
 qpos_data = None
-file_index = 0
+file_index = 6
 hdf5_dir = None
 hdf5_name_without_extension = None
 hdf5_files = []
@@ -24,7 +24,7 @@ index_begin_gpt = 1
 task_path = "/home/chenpengan/hny/hdf5s_song/"
 task_list = glob.glob(os.path.join(task_path, "*"))
 task_list = sorted(task_list)
-task_list = task_list[1:]
+# task_list = task_list[]
 task_index = 0
 task_info_labels = [] 
 
@@ -160,11 +160,13 @@ def save_labels():
     current_subtask = 0
     file_index = file_index + 1
 
+    index_begin = 1
+    index_begin_gpt = 1
+
     if file_index >= (len(hdf5_files)):
 
         file_index = 0
-        index_begin = 1
-        index_begin_gpt = 1
+
         if task_index < len(task_list):
             task_index += 1
 
