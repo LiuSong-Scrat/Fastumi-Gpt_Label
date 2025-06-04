@@ -155,77 +155,77 @@ def get_gpt_label(params,task,video_file):
  
 
 
+threads_num=12  #线程数
+interval_sample = 5   #打标签Frame间隔数
+task_sample_num=1   #每种类型task采样Video数
 
 
-
-
+threads = []
 for task in task_list:
-    threads = []
     # 使用 glob 模块获取该目录下所有 .mp4 文件的路径
     video_files = glob.glob(os.path.join(task["task_name"], "*.hdf5"))
     video_files = sorted(video_files)
     for sno,video_file in enumerate(video_files):
-        
-        with h5py.File(video_file, 'r') as f:
-            qpos_data = np.array(f['observations']['images']['front'])  
+        # if sno>=0:  #Every Task Select All Videos For Subtask labels
+        if sno<task_sample_num:  #Every Task Only Select One Video For Subtask labels
+            with h5py.File(video_file, 'r') as f:
+                qpos_data = np.array(f['observations']['images']['front'])  
 
-
-        print('load video:', video_file)
-        base64Frames = []
-        ## 将60帧的视频转为20帧   hdf5为20帧
-        interval = 1
-        count = 0
-        for img in qpos_data:
-            frame = img
-            if count % interval == 0:
-                _, buffer = cv2.imencode(".jpg", frame)
-                base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
-            count += 1
-
-        #     cv2.imshow("frame",frame)
-        #     cv2.waitKey(1)
-        # #See the files video and add the instruction label
-        # input_task_instruction = input("please describe what you see: ")
-        # if input_task_instruction!='':
-        #     task["task_instruction"]=input_task_instruction
-        # break
-
-
-        
-        interval_sample = 5
-        image_number = str(len(base64Frames[0::interval_sample]))
-        task_instruction = task["task_instruction"]
-        with open(prompt_dir, 'r', encoding='utf-8') as file:
-            content_prompt = file.read()
-        content_prompt = content_prompt.replace('#TASK_INSTRUCTION#', task_instruction)    
-        content = content_prompt.replace('#Number#', image_number)  
-        print("interval_sample: ", interval_sample)
-        print("frames read: ", len(base64Frames))
-        print('input num:', image_number)
-        PROMPT_MESSAGES = [
-            {
-                "role": "user",
-                "content": [
-                    f"{content}",
-                    # *map(lambda x: {"image": x, "resize": 786}, base64Frames[0::18]),
-                    *map(lambda x: {"type": "image_url", 
-                                "image_url": {"url": f'data:image/jpg;base64,{x}', "detail": "auto"}}, base64Frames[0::interval_sample]),
-                ],
-
-            },
-        ]
-        params = {
-            "model": "gpt-4o",
-            "messages": PROMPT_MESSAGES,
-            # "response_format" : {"type": "json_object"},
-            "max_tokens": 500,
-            "temperature": 0.8,
-        }
-
-        t = threading.Thread(target=get_gpt_label,args=(params, task, video_file))
-        threads.append(t)
-        t.start()
-
-    for t in threads:
-        t.join()
+            print('load video:', video_file)
+            base64Frames = []
+            ## 将60帧的视频转为20帧   hdf5为20帧
+            interval = 1
+            count = 0
+            for img in qpos_data:
+                frame = img
+                if count % interval == 0:
+                    _, buffer = cv2.imencode(".jpg", frame)
+                    base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
+                count += 1
+            #     cv2.imshow("frame",frame)
+            #     cv2.waitKey(1)
+            # #See the files video and add the instruction label
+            # input_task_instruction = input("please describe what you see: ")
+            # if input_task_instruction!='':
+            #     task["task_instruction"]=input_task_instruction
+            # break
             
+            image_number = str(len(base64Frames[0::interval_sample]))
+            task_instruction = task["task_instruction"]
+            with open(prompt_dir, 'r', encoding='utf-8') as file:
+                content_prompt = file.read()
+            content_prompt = content_prompt.replace('#TASK_INSTRUCTION#', task_instruction)    
+            content = content_prompt.replace('#Number#', image_number)  
+            print("interval_sample: ", interval_sample)
+            print("frames read: ", len(base64Frames))
+            print('input num:', image_number)
+            PROMPT_MESSAGES = [
+                {
+                    "role": "user",
+                    "content": [
+                        f"{content}",
+                        # *map(lambda x: {"image": x, "resize": 786}, base64Frames[0::18]),
+                        *map(lambda x: {"type": "image_url", 
+                                    "image_url": {"url": f'data:image/jpg;base64,{x}', "detail": "auto"}}, base64Frames[0::interval_sample]),
+                    ],
+
+                },
+            ]
+            params = {
+                "model": "gpt-4o",
+                "messages": PROMPT_MESSAGES,
+                # "response_format" : {"type": "json_object"},
+                "max_tokens": 500,
+                "temperature": 0.8,
+            }
+
+            t = threading.Thread(target=get_gpt_label,args=(params, task, video_file))
+            threads.append(t)
+            t.start()
+            
+            # 存在最后一轮nums<threads_nums导致非阻塞线程的风险，可能线程会被提前终止
+            if len(threads)>=threads_num:
+                for sno,t in enumerate(threads):
+                    t.join()
+                threads.clear() 
+                

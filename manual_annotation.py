@@ -9,7 +9,8 @@ import glob
 import re
 
 qpos_data = None
-file_index = 6
+file_index = 0
+task_index = 9
 hdf5_dir = None
 hdf5_name_without_extension = None
 hdf5_files = []
@@ -21,11 +22,10 @@ json_filename = None
 json_filename_show = None
 index_begin = 1
 index_begin_gpt = 1
-task_path = "/home/chenpengan/hny/hdf5s_song/"
+task_path = "/home/yan/Liusong/Workspace/hdf5"
 task_list = glob.glob(os.path.join(task_path, "*"))
 task_list = sorted(task_list)
 # task_list = task_list[]
-task_index = 0
 task_info_labels = [] 
 
 
